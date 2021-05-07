@@ -18,9 +18,32 @@ namespace Acme.ProjectCompare.Samples
             _bookServices = bookServices;
         }
         [HttpGet]
-        public async Task<IActionResult> GetBooks()
+        public async Task<JsonResult> GetBooks([FromQuery] int pageSize,int pageNumber, string? searchString)
         {
-            var result = await _bookServices.GetBooks();
+            var result = await _bookServices.GetBooks(pageSize,pageNumber,searchString);
+            return Json(result);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetBookById(Guid id)
+        {
+            var book = await _bookServices.GetBookById(id);
+            if(book == null)
+            {
+                return null;
+            }
+            return Ok(book);
+        }
+       
+        [HttpPost]
+        public async Task<IActionResult> CreateBook([FromBody] BookDto bookDto)
+        {
+            var result = await _bookServices.CreateBook(bookDto);
+            return Ok(result);
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateBook(Guid id, [FromBody] BookDto bookDto)
+        {
+            var result = await _bookServices.UpdateBook(id, bookDto);
             return Ok(result);
         }
     }
