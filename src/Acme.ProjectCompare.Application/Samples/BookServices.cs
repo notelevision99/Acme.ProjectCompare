@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 
+
 namespace Acme.ProjectCompare.Samples
 {
     public class BookServices : ApplicationService, IBookServices
     {
         private readonly IRepository<Book, Guid> _bookRepository;
+
         public BookServices(IRepository<Book, Guid> bookRepository)
         {
             _bookRepository = bookRepository;
@@ -21,7 +23,7 @@ namespace Acme.ProjectCompare.Samples
             int count;
             int currentPage;
             int totalCount;
-            int totalPages;
+            int totalPage;
             int previousPage;
             int nextPage;
             if(searchString == null)
@@ -30,6 +32,7 @@ namespace Acme.ProjectCompare.Samples
                 {
                     BookId = p.Id,
                     BookName = p.BookName,
+                    BookType = p.BookType,
                     Description = p.Description
                 }).AsQueryable();
 
@@ -39,21 +42,22 @@ namespace Acme.ProjectCompare.Samples
 
                 totalCount = count;
 
-                totalPages = (int)Math.Ceiling(count / (double)pageSize);
+                totalPage = (int)Math.Ceiling(count / (double)pageSize);
 
                 previousPage = currentPage > 1 ? (currentPage - 1) : 1;
 
-                nextPage = currentPage < totalPages ? (currentPage + 1) : currentPage;
+                nextPage = currentPage < totalPage ? (currentPage + 1) : currentPage;
 
                 var books = source.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(p => new BookDto
                 {
                     BookId = p.BookId,
                     BookName = p.BookName,
+                    BookType = p.BookType,
                     Description = p.Description
                 }).ToList();
        
                 var result = new BookForList { 
-                    TotalPages = totalPages, 
+                    TotalPage = totalPage, 
                     CurrentPage = currentPage,
                     PageSize = pageSize,
                     TotalCount = totalCount,
@@ -70,6 +74,7 @@ namespace Acme.ProjectCompare.Samples
                 {
                     BookId = p.Id,
                     BookName = p.BookName,
+                    BookType = p.BookType,
                     Description = p.Description
                 }).AsQueryable();
 
@@ -79,21 +84,22 @@ namespace Acme.ProjectCompare.Samples
 
                 totalCount = count;
 
-                totalPages = (int)Math.Ceiling(count / (double)pageSize);
+                totalPage = (int)Math.Ceiling(count / (double)pageSize);
 
                 previousPage = currentPage > 1 ? (currentPage - 1) : 1;
 
-                nextPage = currentPage < totalPages ? (currentPage + 1) : totalPages;
+                nextPage = currentPage < totalPage ? (currentPage + 1) : totalPage;
 
                 var books = source.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(p => new BookDto
                 {
                     BookId = p.BookId,
                     BookName = p.BookName,
+                    BookType = p.BookType,
                     Description = p.Description
                 }).ToList();
                 var result = new BookForList
                 {
-                    TotalPages = totalPages,
+                    TotalPage = totalPage,
                     CurrentPage = currentPage,
                     PageSize = pageSize,
                     TotalCount = totalCount,
@@ -127,6 +133,7 @@ namespace Acme.ProjectCompare.Samples
             }
             return new BookDto
             {
+                BookId = bookDetail.Id,
                 BookName = bookDetail.BookName,
                 BookType = bookDetail.BookType,
                 Description = bookDetail.Description
@@ -171,6 +178,21 @@ namespace Acme.ProjectCompare.Samples
             book.Description = bookDto.Description;
             await _bookRepository.InsertAsync(book);
             return 1;
+        }
+        public async Task<int> DeteleBook(Guid id)
+        {
+            var bookToDetele =  await _bookRepository.FirstOrDefaultAsync(p => p.Id == id);
+            if(bookToDetele == null)
+            {
+                return 0;
+            }
+            else
+            {
+                await _bookRepository.DeleteAsync(bookToDetele);
+                return 1;
+            }
+                
+           
         }
     }
 }

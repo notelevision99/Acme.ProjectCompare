@@ -20,7 +20,7 @@ namespace Acme.ProjectCompare.Samples
         [HttpGet]
         public async Task<JsonResult> GetBooks([FromQuery] int pageSize,int pageNumber, string? searchString)
         {
-            var result = await _bookServices.GetBooks(pageSize,pageNumber,searchString);
+            var result = await _bookServices.GetBooks(pageSize,pageNumber,searchString);       
             return Json(result);
         }
         [HttpGet("{id}")]
@@ -38,13 +38,32 @@ namespace Acme.ProjectCompare.Samples
         public async Task<IActionResult> CreateBook([FromBody] BookDto bookDto)
         {
             var result = await _bookServices.CreateBook(bookDto);
-            return Ok(result);
+            if(result == 0)
+            {
+                return new BadRequestObjectResult(new { Message = "Update failed" });
+            }
+            return Ok(new { Message = "Created Successfully" });
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBook(Guid id, [FromBody] BookDto bookDto)
         {
             var result = await _bookServices.UpdateBook(id, bookDto);
-            return Ok(result);
+            if(result == 0)
+            {
+                return new BadRequestObjectResult(new { Message = "Update failed" });
+            }
+            return Ok(new { Message = "Updated Successfully" });
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBook(Guid id)
+        {
+            var result = await _bookServices.DeleteBook(id);
+            if (result == 0)
+            {
+                return new BadRequestObjectResult(new { Message = "Delele Error" });
+            }
+            return Ok(new { Message = "Deleted Successfully" });
+
         }
     }
 }
