@@ -41,7 +41,7 @@ namespace Acme.ProjectCompare.Samples
             if(result == 0)
             {
                 return new BadRequestObjectResult(new { Message = "Update failed" });
-            }
+            }   
             return Ok(new { Message = "Created Successfully" });
         }
         [HttpPut("{id}")]

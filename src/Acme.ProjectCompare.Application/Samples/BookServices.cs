@@ -173,11 +173,15 @@ namespace Acme.ProjectCompare.Samples
         {
             Book book;
             book = new Book();
-            book.BookName = bookDto.BookName;
-            book.BookType = bookDto.BookType;
-            book.Description = bookDto.Description;
-            await _bookRepository.InsertAsync(book);
-            return 1;
+            if(bookDto != null)
+            {
+                book.BookName = bookDto.BookName;
+                book.BookType = bookDto.BookType;
+                book.Description = bookDto.Description;
+                await _bookRepository.InsertAsync(book);
+                return 1;
+            }
+            return 0;
         }
         public async Task<int> DeteleBook(Guid id)
         {
