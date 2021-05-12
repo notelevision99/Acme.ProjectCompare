@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Volo.Abp.Http.Client" Version="4.3.0" />
     <ProjectReference Include="..\Acme.ProjectCompare.Application.Contracts\Acme.ProjectCompare.Application.Contracts.csproj" />
   </ItemGroup>
